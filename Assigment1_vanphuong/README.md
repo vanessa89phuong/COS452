@@ -4,7 +4,7 @@
 ###09/19/2015
 
 
-I found this 3D Flame  at https://www.shadertoy.com/view/MdX3zr
+I found this 3D Flame  at [Flame](https://www.shadertoy.com/view/MdX3zr) 
  I like the animation, and how realistic flame looks.  I like the way that the author designed how the flame glows. The flame displayed multiple colors, ranging from blue to orange yellow. I analyzed the source code and was able to understand the snippets of the source code.  The following snippets of code were taken from the source code. 
 ```html
 float noise(vec3 p) //Thx to Las^Mercury
