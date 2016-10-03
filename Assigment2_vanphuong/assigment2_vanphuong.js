@@ -24,8 +24,8 @@ var modelMatrix;
 
 var steps = 0;
 var mouseDown = false;
-var nLastMouseX = null;
-var nLastMouseY = null;
+var lastMouseX = null;
+var lastMouseY = null;
 var v3Transform = vec3(0.0, 0.0, 0.0);
 var cubCenter = [0.0, 0.0, 0.0];
 
@@ -49,7 +49,7 @@ window.onload = function init()
     //
     //  Load shaders and initialize attribute buffers
     //
-    initCube();
+    initDrawing();
     //.
     document.getElementById( "xButton" ).onclick = function () {
         transforms.push(rotateX(-2.0));
@@ -78,38 +78,26 @@ window.onload = function init()
                 transforms.push(translate(v3Transform));
                 render();
                 break;
-            case 39: //.Right-Arraoy-Key
+            case 39: //.Right-Arrow-Key
                 cubCenter[0] += 0.01;
                 v3Transform = vec3(0.01, 0.0, 0.0);
                 transforms.push(translate(v3Transform));
                 render();
                 break;
-            case 40: //.Dn-Arrow-Key
+            case 40: //.Down-Arrow-Key
                 cubCenter[1] -= 0.01;
                 v3Transform = vec3(0.0, -0.01, 0.0);
                 transforms.push(translate(v3Transform));
                 render();
                 break;
-            case 188: //. < Key - PgUp
-                steps++;
-                if(steps > 10) {
-                    steps--;
-                    break;
-                }
+            case 188: //. < PageUp
                 cubCenter[2] += 0.01;
                 transforms.push(translate(vec3(0.0, 0.0, 0.1)));
-                transforms.push(scalem(1.05, 1.05, 1.05));
                 render();
                 break;
-            case 190: //. > Key - PgDn
-                steps--;
-                if(steps < -10) {
-                    steps++;
-                    break;
-                }
+            case 190: //. > PageDown
                 cubCenter[2] -= 0.01;
                 transforms.push(translate(vec3(0.0, 0.0, -0.1)));
-                transforms.push(scalem(0.95, 0.95, 0.95));
                 render();
                 break;
             default:
@@ -117,6 +105,7 @@ window.onload = function init()
         }
     };
 
+    //. Using onkeypress for r, R, s, S, b, B
     window.onkeypress = function(event) {
         switch(event.charCode) {
             case 114: //. 'r' Key
@@ -128,16 +117,16 @@ window.onload = function init()
                 render();
                 break;
             case 115: //. 's' Key
-                transforms.push(scalem(0.95, 0.95, 0.95));
+                transforms.push(scalem(0.90, 0.90, 0.90));
                 render();
                 break;
             case 83: //. 'S' Key
-                transforms.push(scalem(1.05, 1.05, 1.05));
+                transforms.push(scalem(1.02, 1.02, 1.02));
                 render();
                 break;
-            case 66: //. 'B' Key
             case 98: //. 'b' Key
-                initCube();
+            case 66: //. 'B' Key
+                initDrawing();
                 render();
                 break;
             default: //. '-' Key
@@ -148,7 +137,7 @@ window.onload = function init()
 
 }
 
-function initCube()
+function initDrawing()
 {
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
@@ -177,8 +166,8 @@ function initCube()
 
     steps = 0;
     mouseDown = false;
-    nLastMouseX = null;
-    nLastMouseY = null;
+    lastMouseX = null;
+    lastMouseY = null;
     v3Transform = vec3(0.0, 0.0, 0.0);
     cubCenter = [0.0, 0.0, 0.0];
 }
@@ -229,6 +218,8 @@ function quad(a, b, c, d)
         points.push( vertices[indices[i]] );
         colors.push(vertexColors[a]);
     }
+
+    //console.log("0. ");
 }
 
 function render()
@@ -237,7 +228,8 @@ function render()
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // Using the MV functions ... briefly described on Pg 194
     modelMatrix = mat4();
-    for(var i = transforms.length -1; i >= 0 ; i--) {
+
+    for(var i = transforms.length - 1; i >= 0 ; i--) {
         modelMatrix = mult(modelMatrix, transforms[i]);
     }
     gl.uniformMatrix4fv( uMatrixLoc, false, flatten(modelMatrix));
@@ -248,8 +240,8 @@ function render()
 function handleMouseDown(event)
 {
     mouseDown = true;
-    nLastMouseX = event.clientX;
-    nLastMouseY = event.clientY;
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
 }
 
 function handleMouseUp(event)
@@ -262,23 +254,23 @@ function handleMouseMove(event)
     if(!mouseDown) {
         return;
     }
-    var fDeltaX = cubCenter[0];
-    var fDeltaY = cubCenter[1];
-    var fDeltaZ = cubCenter[2];
-    var nNewMouseX = event.clientX;
-    var nNewMouseY = event.clientY;
-    var nDeltaX = nNewMouseX - nLastMouseX;
-    var nDeltaY = nNewMouseY - nLastMouseY;
-    var fRotAngleX = nDeltaY / 5.0;
-    var fRotAngleY = nDeltaX / 5.0;
+    var cubDeltaX = cubCenter[0];
+    var cubDeltaY = cubCenter[1];
+    var cubDeltaZ = cubCenter[2];
+    var newX = event.clientX;
+    var newY = event.clientY;
+    var deltaX = newX - lastMouseX;
+    var deltaY = newY - lastMouseY;
+    var rotAngleX = deltaY / 5.0;
+    var rotAngleY = deltaX / 5.0;
 
-    transforms.push(translate(vec3(-fDeltaX, -fDeltaY, -fDeltaZ)));
-    transforms.push(rotateX(fRotAngleX));
-    transforms.push(rotateY(fRotAngleY));
-    transforms.push(translate(vec3(fDeltaX, fDeltaY, fDeltaZ)));
+    transforms.push(translate(vec3(-cubDeltaX, -cubDeltaY, -cubDeltaZ)));
+    transforms.push(rotateX(rotAngleX));
+    transforms.push(rotateY(rotAngleY));
+    transforms.push(translate(vec3(cubDeltaX, cubDeltaY, cubDeltaZ)));
 
     render();
-    nLastMouseX = nNewMouseX;
-    nLastMouseY = nNewMouseY;
+    lastMouseX = newX;
+    lastMouseY = newY;
 }
 //.
