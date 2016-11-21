@@ -30,21 +30,21 @@ function init(){
 	var materialHead= new THREE.MeshBasicMaterial({color: 0xFFFFFF, transparent: true, opacity: 0.5}) ;
     headMesh = new THREE.Mesh( head, materialHead );
 	headMesh.position.set(0.0,1.0, -1.0); 
-//    scene.add( headMesh );
+    scene.add( headMesh );
 
 	// ear left
 	var earLeft = new THREE.SphereGeometry(1,10,10);
 	 var materialLeft= new THREE.MeshBasicMaterial({color: 0x999999, transparent: true, opacity: 0.5}) ;
     var leftMesh = new THREE.Mesh( earLeft, materialLeft );
 	leftMesh.position.set(1.6,2.4,-1.2)
-   //scene.add( leftMesh );
+    scene.add( leftMesh );
 
    	//ear right
 	var earRight = new THREE.SphereGeometry(1,10,10);
 	var materialRight= new THREE.MeshBasicMaterial({color: 0x999999, transparent: true, opacity: 0.5}) ;
     var rightMesh = new THREE.Mesh( earRight, materialRight );
 	rightMesh.position.set(-1.6,2.4,-1.2)
-   //	scene.add( rightMesh );
+  	scene.add( rightMesh );
 
 
 
