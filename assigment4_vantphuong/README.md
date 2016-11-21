@@ -17,6 +17,6 @@ Fragment shader implemented simplex implementations. Generation of texture, calc
 
 ###Part III: 
 Group project 
-###Srinivasa Natarajan
+###Srinivasan Natarajan
 ###Daniel Dusabimana
 ###Van Phuong 
